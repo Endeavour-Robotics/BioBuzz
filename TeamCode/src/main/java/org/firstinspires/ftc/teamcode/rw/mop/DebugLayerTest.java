@@ -1,22 +1,30 @@
 package org.firstinspires.ftc.teamcode.rw.mop;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Console;
-import org.firstinspires.ftc.teamcode.rw.sys.biobuzz_config;
+import org.firstinspires.ftc.teamcode.rw.sys.biobuzzConfigurer;
+import org.firstinspires.ftc.teamcode.rw.sys.configBuilder;
 import org.firstinspires.ftc.teamcode.rw.sys.robot;
+import org.firstinspires.ftc.teamcode.rw.sys.seasonConfigurer;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
+@Disabled
 @TeleOp(name="DebugLayerTest", group="tests")
 public class DebugLayerTest extends OpMode {
     private Console console;
     robot robot = new robot();
+    seasonConfigurer season = new biobuzzConfigurer(); // BioBuzz season
     Telemetry tm;
-    biobuzz_config config;
+    configBuilder config;
 
     // RUNTIME VARIABLES
     boolean debugMode = true;
@@ -36,11 +44,13 @@ public class DebugLayerTest extends OpMode {
         tm.setDisplayFormat(Telemetry.DisplayFormat.HTML);
         console = new Console(tm);
 
+        File file = new File(AppUtil.FIRST_FOLDER, "Robo Warriors/biobuzz31767.jsonc");
+
         takepowers.add(0.45);
         takepowers.add(0.65);
         takepowers.add(0.85);
 
-        config.init(hardwareMap, true, true, true, true);
+        config.init(file, hardwareMap, season);
     }
 
     @Override

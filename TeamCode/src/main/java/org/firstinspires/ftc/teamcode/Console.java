@@ -19,6 +19,9 @@ public class Console {
     public void log(String key, String value) {
         telemetry.addData(key, value);
     }
+    public void persist_log(String key, String value) {
+        telemetry.log().add("%s: %s", key, value);
+    }
 
     public void info(String value) {
         log(formatHtml(COLOR_INFO, value));
@@ -36,6 +39,11 @@ public class Console {
         log(formatHtml(COLOR_WARN, key), formatHtml(COLOR_WARN, value));
     }
 
+    public void warn(String key, String value, boolean persists) {
+        if (persists) persist_log(formatHtml(COLOR_WARN, key), formatHtml(COLOR_WARN, value));
+        else log(formatHtml(COLOR_WARN, key), formatHtml(COLOR_WARN, value));
+    }
+
     public void error(String value) {
         log(formatHtml(COLOR_ERROR, value));
     }
@@ -44,8 +52,13 @@ public class Console {
         log(formatHtml(COLOR_ERROR, key), formatHtml(COLOR_ERROR, value));
     }
 
+    public void error(String key, String value, boolean persists) {
+        if (persists) persist_log(formatHtml(COLOR_ERROR, key), formatHtml(COLOR_ERROR, value));
+        else log(formatHtml(COLOR_ERROR, key), formatHtml(COLOR_ERROR, value));
+    }
+
     public void h1(String text, String Color) {
-        log("<font color=\"" + Color + "\"><h1>" + text + "</h1></font>");
+        log("<font color=\"" + Color + "\"><div style=\"text-align: center;\"><h1>" + text + "</h1></div></font>");
     }
 
     private String formatHtml(String color, String text) {

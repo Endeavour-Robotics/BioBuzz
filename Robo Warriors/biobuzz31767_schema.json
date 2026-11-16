@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FTC robot config (BioBuzz)",
+  "type": "object",
+  "required": ["hardware", "motorPowers"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "configName": { "type": "string", "minLength": 1 },
+        "teamNumber": { "type": "string", "pattern": "^[0-9]+$" },
+        "teamName":   { "type": "string" },
+        "version":    { "type": "string" },
+        "game":       { "type": "string" },
+        "year":       { "type": "integer" },
+        "prod":       { "type": "boolean" },
+        "lastEdited": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+      }
+    },
+
+    "hardware": {
+      "type": "object",
+      "required": ["motorConfig"],
+      "additionalProperties": false,
+      "properties": {
+        "motorConfig": {
+          "type": "object",
+          "required": ["fl", "fr", "bl", "br"],
+          "additionalProperties": { "$ref": "#/$defs/motorEntry" }
+        },
+        "servoConfig": { "type": "object" },
+        "imuConfig":   { "type": "object" }
+      }
+    },
+
+    "motorPowers": {
+      "type": "object",
+      "required": ["speedLimits"],
+      "additionalProperties": false,
+      "properties": {
+        "speedLimits": {
+          "type": "object",
+          "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "intake":  { "$ref": "#/$defs/presets" },
+        "outtake": { "$ref": "#/$defs/presets" }
+      }
+    },
+
+    "controls": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scheme":   { "type": "string" },
+        "invert":   { "type": "boolean" },
+        "deadZone": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    }
+  },
+
+  "$defs": {
+    "motorEntry": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "prefixItems": [
+        { "type": "string", "minLength": 1 },
+        { "enum": ["FORWARD", "REVERSE"] },
+        { "enum": ["RUN_WITHOUT_ENCODER", "RUN_USING_ENCODER", "RUN_TO_POSITION", "STOP_AND_RESET_ENCODER"] },
+        { "enum": ["BRAKE", "FLOAT"] }
+      ]
+    },
+    "presets": {
+      "type": "array",
+      "items": { "type": "number", "minimum": -1, "maximum": 1 }
+    }
+  }
+}

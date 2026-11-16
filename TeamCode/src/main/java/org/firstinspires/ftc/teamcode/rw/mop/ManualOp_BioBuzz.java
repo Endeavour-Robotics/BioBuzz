@@ -4,36 +4,32 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Console;
-import org.firstinspires.ftc.teamcode.rw.sys.biobuzz_config;
+import org.firstinspires.ftc.teamcode.rw.sys.biobuzzConfigurer;
+import org.firstinspires.ftc.teamcode.rw.sys.configBuilder;
 import org.firstinspires.ftc.teamcode.rw.sys.robot;
+import org.firstinspires.ftc.teamcode.rw.sys.seasonConfigurer;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
+import java.io.File;
 
 @TeleOp(name="ManualOP", group="BioBuzz")
 public class ManualOp_BioBuzz extends OpMode {
     private Console console;
-    robot robot = new robot();
+    robot bot = new robot();
     Telemetry tm;
-    biobuzz_config config;
+    configBuilder config = new configBuilder();
+    seasonConfigurer season = new biobuzzConfigurer(); // BioBuzz season
 
     // RUNTIME VARIABLES
     boolean debugMode = true;
-    boolean intakeMode = false;
-    boolean outtakeMode = false;
-    boolean movementMode = true;
-    boolean odometryMode = false;
-    boolean invert_controls = false;
-    double deadZone = 0.1;
-    double fb_fix = -1;
+    final double fb_fix = -1;
 
     // PUBLICITY VARIABLES
     double fb, rt, cw;
     boolean intake = false, outtake = false;
     boolean debug;
-    List<Double> takepowers = new ArrayList<>();
     int takerange;
 
     @Override
@@ -42,17 +38,19 @@ public class ManualOp_BioBuzz extends OpMode {
         tm.setDisplayFormat(Telemetry.DisplayFormat.HTML);
         console = new Console(tm);
 
-        takepowers.add(0.45);
-        takepowers.add(0.65);
-        takepowers.add(0.85);
+        File file = new File(AppUtil.FIRST_FOLDER, "Robo Warriors/biobuzz31767.jsonc");
 
-        robot.init(config);
-        config.init(hardwareMap, intakeMode, outtakeMode, movementMode, odometryMode);
+        config.init(file, hardwareMap, season);
+
+        if (config.hasErrors()) { for (String key : config.errors) {console.error("Config", key, true);} tm.update(); requestOpModeStop(); return; }
+        if (config.hasWarnings()) { for (String key : config.warnings) {console.warn("Config", key, true);} tm.update(); }
+
+        bot.init(config);
     }
 
     @Override
     public void loop() {
-        if (!invert_controls) {
+        if (!config.config.controls.invert) { // If (false)
             fb = (fb_fix * gamepad1.left_stick_y); //forwards backwards; gamepad returns backwards
             rt = gamepad1.right_stick_x; //rotate
             cw = gamepad1.left_stick_x; //crabwalk
@@ -62,62 +60,54 @@ public class ManualOp_BioBuzz extends OpMode {
             cw = gamepad1.right_stick_x; //crabwalk
         }
 
-        if (Math.abs(fb) < deadZone) fb = 0;
-        if (Math.abs(rt) < deadZone) rt = 0;
-        if (Math.abs(cw) < deadZone) cw = 0;
+        if (Math.abs(fb) < config.config.controls.deadZone) fb = 0;
+        if (Math.abs(rt) < config.config.controls.deadZone) rt = 0;
+        if (Math.abs(cw) < config.config.controls.deadZone) cw = 0;
 
-        if (intakeMode) {
+        if (config.has("intake")) {
             if (gamepad2.left_bumper && gamepad2.leftBumperWasReleased()) {
                 intake = !intake;
             }
 
             if (intake) {
-                robot.teleop.take("in", 0.7);
+                bot.teleop.take("in", config.config.motorPowers.intake.get(0));
             } else {
-                robot.teleop.take("in", 0);
+                bot.teleop.take("in", 0);
             }
         }
 
-        if (outtakeMode) {
+        if (config.has("outtake")) {
             if (gamepad2.right_bumper && gamepad2.rightBumperWasReleased()) {
                 outtake = !outtake;
             }
 
             if (outtake) {
-                robot.teleop.take("out", takepowers.get(takerange));
+                bot.teleop.take("out", config.config.motorPowers.outtake.get(takerange));
             } else {
-                robot.teleop.take("out", 0);
+                bot.teleop.take("out", 0);
             }
 
-            if (gamepad2.dpad_up && gamepad2.dpadUpWasReleased() && takerange < takepowers.size() - 1) {
+            if (gamepad2.dpad_up && gamepad2.dpadUpWasReleased() && takerange < config.config.motorPowers.outtake.size() - 1) {
                 takerange++;
-                if (takerange >= takepowers.size()) {
-                    takerange = 0;
-                }
             }
 
-            if (gamepad2.dpad_down && gamepad2.dpadDownWasReleased() && takerange >= 0) {
+            if (gamepad2.dpad_down && gamepad2.dpadDownWasReleased() && takerange > 0) {
                 takerange--;
-                if (takerange < 0) {
-                    takerange = takepowers.size() - 1;
-                }
             }
         }
 
-        if ((gamepad2.dpad_right || gamepad1.dpad_right) && debugMode) debug = true;
+        if ((gamepad2.dpad_right | gamepad1.dpad_right) && (gamepad2.dpadRightWasReleased() | gamepad1.dpadRightWasReleased()) && debugMode) debug = !debug;
         if (debug) debug();
 
-        robot.teleop.drive(fb, rt, cw);
+        bot.teleop.drive(fb, rt, cw);
     }
 
     public void debug() {
         console.h1("Debug Menu", "#DDD");
         console.info("In?" + intake);
         console.info("Out?" + outtake);
-        console.info("Takerange:" + takerange + "Take power:" + takepowers.get(takerange));
+        console.info("Takerange:" + takerange + "Take power:" + config.config.motorPowers.outtake.get(takerange));
         console.log(String.format(Locale.ENGLISH, "Movement Values FB: %.2f | RT: %.2f | CW: %.2f", fb, rt, cw)); // Forwards|Backwards Rotate Crabwalk
         tm.update();
     }
 }
-//the Wi-Fi is bad here
-//solution: use hotspot

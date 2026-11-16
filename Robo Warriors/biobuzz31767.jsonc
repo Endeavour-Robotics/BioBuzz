@@ -1,22 +1,26 @@
 {
   "meta": {
-    "configName": "rwbb1", // Read as: Robo Warriors BioBuzz 1
+    "$schema": "./biobuzz31767_schema.json",
+    "configName": "rw_bb1", // Read as: Robo Warriors BioBuzz 1
     "teamNumber": "31767", // Keep as string
     "teamName": "RoboWarriors",
-    "version": "0.0.1",
+    "version": "0.0.2", // Config Version; Change every time this file is changed
     "game": "BIOBUZZ", // Game Name;; 2025: DECODE; 2026: BIOBUZZ
     "year": 2026, // Add one for secondary year
+    "lastEdited": "11/15/2026",
     "prod": false
   },
 
   "hardware": {
     "motorConfig": {
+      // fl, fr, bl, br are all required.
       "fl": ["FrontLeft", "REVERSE", "RUN_WITHOUT_ENCODER", "BRAKE"],
       "fr": ["FrontRight", "FORWARD", "RUN_WITHOUT_ENCODER", "BRAKE"],
       "bl": ["BackLeft", "REVERSE", "RUN_WITHOUT_ENCODER", "BRAKE"],
       "br": ["BackRight", "FORWARD", "RUN_WITHOUT_ENCODER", "BRAKE"],
-      "in": ["Intake", "REVERSE", "RUN_WITHOUT_ENCODER", "BRAKE"],
-      "out": ["Outtake", "FORWARD", "RUN_WITHOUT_ENCODER", "FLOAT"]
+
+      "intake": ["Intake", "REVERSE", "RUN_WITHOUT_ENCODER", "BRAKE"],
+      "outtake": ["Outtake", "FORWARD", "RUN_WITHOUT_ENCODER", "FLOAT"]
     },
     "servoConfig": {
       // None

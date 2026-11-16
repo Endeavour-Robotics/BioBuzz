@@ -1,73 +1,76 @@
 package org.firstinspires.ftc.teamcode.rw.sys;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 import java.util.*;
 
 public class robot {
-    private IMU odo;
-    Map<String, MotorEquation> kinematics = new HashMap<>();
 
-    public biobuzz_config config = new biobuzz_config();
+    public configBuilder config = new configBuilder();
+    public double flLimit;
+    public double frLimit;
+    public double blLimit;
+    public double brLimit;
     public DcMotor fl, fr, bl, br;
     public DcMotor in, out;
 
     public TeleOp teleop = new TeleOp();
     public Auto auto = new Auto();
+    private double limitHelper(double speed, double limit) { return Math.abs(speed) / limit; }
+    private void botDrive(double fb, double rt, double cw) {
+        double flSpeed = Objects.requireNonNull(config.kinematics.get("fl")).calculate(fb, rt, cw);
+        double frSpeed = Objects.requireNonNull(config.kinematics.get("fr")).calculate(fb, rt, cw);
+        double blSpeed = Objects.requireNonNull(config.kinematics.get("bl")).calculate(fb, rt, cw);
+        double brSpeed = Objects.requireNonNull(config.kinematics.get("br")).calculate(fb, rt, cw);
 
-    public void init(biobuzz_config initializedConfig) {
+        // Prevent one wheel from being faster than the other //
+        double flRatio = limitHelper(flSpeed, flLimit);
+        double frRatio = limitHelper(frSpeed, frLimit);
+        double blRatio = limitHelper(blSpeed, blLimit);
+        double brRatio = limitHelper(brSpeed, brLimit);
+
+        double worst = Math.max(Math.max(flRatio, frRatio), Math.max(blRatio, brRatio));
+
+        if (worst > 1.0) { // One motor is above 1
+            flSpeed /= worst;       // shrink all four by the same amount;; Needed for meccanum drive
+            frSpeed /= worst;
+            blSpeed /= worst;
+            brSpeed /= worst;
+        }
+        //==========================//
+
+        if (fl != null) fl.setPower(flSpeed);
+        if (fr != null) fr.setPower(frSpeed);
+        if (bl != null) bl.setPower(blSpeed);
+        if (br != null) br.setPower(brSpeed);
+    }
+
+    public void init(configBuilder initializedConfig) {
         this.config = initializedConfig;
 
         this.fl = config.fl();
         this.fr = config.fr();
         this.bl = config.bl();
         this.br = config.br();
-        this.in = config.in();
-        this.out = config.out();
+        this.in = config.has("intake") ? config.motor("intake") : null;
+        this.out = config.has("outtake") ? config.motor("outtake") : null;
+
+        this.flLimit = config.getDefaultSpeedLimit("fl");
+        this.frLimit = config.getDefaultSpeedLimit("fr");
+        this.blLimit = config.getDefaultSpeedLimit("bl");
+        this.brLimit = config.getDefaultSpeedLimit("br");
     }
 
     @FunctionalInterface
     public interface MotorEquation { double calculate(double fb, double rt, double cw); }
     public class TeleOp {
         public void drive(double fb, double rt, double cw) {
-            double flSpeed = Objects.requireNonNull(config.kinematics.get("fl")).calculate(fb, rt, cw);
-            double frSpeed = Objects.requireNonNull(config.kinematics.get("fr")).calculate(fb, rt, cw);
-            double blSpeed = Objects.requireNonNull(config.kinematics.get("bl")).calculate(fb, rt, cw);
-            double brSpeed = Objects.requireNonNull(config.kinematics.get("br")).calculate(fb, rt, cw);
-
-            // Prevent one wheel from being faster than the other //
-            double maxi = Math.max(Math.abs(flSpeed), Math.abs(frSpeed));
-            maxi = Math.max(maxi, Math.abs(blSpeed));
-            maxi = Math.max(maxi, Math.abs(brSpeed));
-
-            if (maxi > 1.0) {
-                flSpeed /= maxi;
-                frSpeed /= maxi;
-                blSpeed /= maxi;
-                brSpeed /= maxi;
-            }
-            //==========================//
-
-            // Add limit //
-            double max_speed = 0.7;
-            flSpeed = Range.clip(flSpeed, -max_speed, max_speed);
-            frSpeed = Range.clip(frSpeed, -max_speed, max_speed);
-            blSpeed = Range.clip(blSpeed, -max_speed, max_speed);
-            brSpeed = Range.clip(brSpeed, -max_speed, max_speed);
-
-            if (fl != null) fl.setPower(flSpeed);
-            if (fr != null) fr.setPower(frSpeed);
-            if (bl != null) bl.setPower(blSpeed);
-            if (br != null) br.setPower(brSpeed);
+            botDrive(fb, rt, cw);
         }
 
         public void take(String inout, double takePower) {
             if (inout.equals("in")) {
-                if (in != null) in.setPower(-takePower);
+                if (in != null) in.setPower(takePower);
             } else if (inout.equals("out")) {
                 if (out != null) out.setPower(takePower);
             }
@@ -76,28 +79,7 @@ public class robot {
 
     public class Auto {
         public void drive(double fb, double rt, double cw) {
-            double flSpeed = Objects.requireNonNull(config.kinematics.get("fl")).calculate(fb, rt, cw);
-            double frSpeed = Objects.requireNonNull(config.kinematics.get("fr")).calculate(fb, rt, cw);
-            double blSpeed = Objects.requireNonNull(config.kinematics.get("bl")).calculate(fb, rt, cw);
-            double brSpeed = Objects.requireNonNull(kinematics.get("br")).calculate(fb, rt, cw);
-
-            // Prevent limit passing //
-            double max = Math.max(Math.abs(flSpeed), Math.abs(frSpeed));
-            max = Math.max(max, Math.abs(blSpeed));
-            max = Math.max(max, Math.abs(brSpeed));
-
-            if (max > 1.0) {
-                flSpeed /= max;
-                frSpeed /= max;
-                blSpeed /= max;
-                brSpeed /= max;
-            }
-            //==========================//
-
-            if (fl != null) fl.setPower(flSpeed);
-            if (fr != null) fr.setPower(frSpeed);
-            if (bl != null) bl.setPower(blSpeed);
-            if (br != null) br.setPower(brSpeed);
+            botDrive(fb, rt, cw);
         }
 
         public void spin(String inout, double speed) {

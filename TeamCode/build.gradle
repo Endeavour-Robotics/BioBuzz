@@ -27,3 +27,24 @@ android {
 dependencies {
     implementation project(':FtcRobotController')
 }
+
+tasks.register('stampConfigs') {
+    def configDir = file('Robo Warriors')
+    doLast {
+        def pattern = ~/("lastEdited"\s*:\s*")[^"]*(")/
+        fileTree(dir: configDir, include: '*.jsonc').each { f ->
+            // Only stamp files with uncommitted changes
+            def status = ['git', 'status', '--porcelain', '--', f.name].execute(null, f.parentFile).text
+            if (status.trim().isEmpty()) return
+
+            def today = new Date(f.lastModified()).format('yyyy-MM-dd')
+            def text = f.getText('UTF-8')
+            if (!(text =~ pattern)) { logger.warn("stampConfigs: no lastEdited key in ${f.name}"); return }
+
+            def updated = text.replaceFirst(pattern) { all, a, b -> a + today + b }
+            if (updated != text) { f.setText(updated, 'UTF-8'); println "stamped ${f.name} -> ${today}" }
+        }
+    }
+}
+
+preBuild.dependsOn stampConfigs

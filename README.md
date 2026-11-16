@@ -1,13 +1,15 @@
-# BioBuzz 2026-2027 TeleOp
-### Management
-The TeleOp OpCode for the 2026-2027 BioBuzz FTC season.
-All production builds shall be merged into `main` via pull request.
-Stick to developing on your own branch, make a pull request towards `main`, and either it will be merged automatically or we will do code review. This is done manually.
+<div align="center"><img width="145" height="124.5" alt="first_ftc_biobuzz_honeycomb" src="https://github.com/user-attachments/assets/f4300d7b-cfed-4a2d-b0d9-cf1ef4034d1e" /></div>
+<h1 align="center">
+  Endeavour Robotics BioBuzz
+  <br>
+  <sub>Codebase</sub>
+</h1>
 
-### Script Formatting
-Please try to stick to four spaces per tab, rather than two.
+<p> This repository contains the work of the programming teams of the Endeavour Robotics community. Endeavour Robotics is made up of two teams, that being the RoboWarriors (31767) and TechTitans (18989), who work together to make it through the year. </p>
 
-If it doesn't need to be optimized (such as prepending ++/-- instead of appending ++/--), don't do it. This may only apply to C++. If it is something such as an equation, the compiler will translate it to the same assembly output.
+<p> There are many notable concepts and scripts in this repository, such as: </p>
+<ul><li> A JSONC based auto-configurator</li><li> Unit tests for this configuring method <li> Pedro-Pathing autonomous </li></ul>
 
-### Misc.
-If you think anything above should be changed, added, or removed, please make a PR instead of a direct commit and someone will review it.
+<p> These have been made over time and might be used in later seasons. If you wish to see how they work, just check the <code>TeamCode/src/main/java/org/firstinspires/ftc/teamcode/</code> directory and look for any file similarly named or containing config. The actual configurations exist on the Control Hub's <code>sd:/FIRST</code> folder, and are not provided here. The schema is provided and can be used in Android Studio. </p>
+
+<h1> HEY TEAM IS THERE ANYTHING ELSE </h1>

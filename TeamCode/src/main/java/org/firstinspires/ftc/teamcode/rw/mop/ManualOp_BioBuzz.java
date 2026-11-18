@@ -42,7 +42,7 @@ public class ManualOp_BioBuzz extends OpMode {
 
         config.init(file, hardwareMap, season);
 
-        if (config.hasErrors()) { for (String key : config.errors) {console.error("Config", key, true);} tm.update(); requestOpModeStop(); return; }
+        if (config.hasErrors()) { for (String key : config.errors) {console.error("Config", key, true);} tm.update(); }
         if (config.hasWarnings()) { for (String key : config.warnings) {console.warn("Config", key, true);} tm.update(); }
 
         bot.init(config);

@@ -31,18 +31,9 @@ public class biobuzzConfigurer implements seasonConfigurer {
                 config.motorPowers.outtake.add(0.65);
                 config.motorPowers.outtake.add(0.80);
             } else {
-                if (config.motorPowers.outtake == null || config.motorPowers.outtake.isEmpty()) {
-                    warnings.add("Array Key 'outtake' not set. Using default [0.45, 0.65, 0.8]");
-                    config.motorPowers.outtake = new ArrayList<>();
-
-                    config.motorPowers.outtake.add(0.45);
-                    config.motorPowers.outtake.add(0.65);
-                    config.motorPowers.outtake.add(0.80);
-                } else {
-                    for (Double power : config.motorPowers.outtake) {
-                        if (power == null || outOf_Range(power, -1, 1)) {
-                            errors.add("SOME value for Array Key 'outtake' not in range [-1, 1]");
-                        }
+                for (Double power : config.motorPowers.outtake) {
+                    if (power == null || outOf_Range(power, -1, 1)) {
+                        errors.add("SOME value for Array Key 'outtake' not in range [-1, 1]");
                     }
                 }
             }

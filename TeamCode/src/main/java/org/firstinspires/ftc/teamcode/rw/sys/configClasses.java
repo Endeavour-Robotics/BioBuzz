@@ -10,7 +10,7 @@ public class configClasses {
     public Controls controls;
 
     public static class Meta {
-        public String configName, teamNumber, teamName, version, game;
+        public String configName, teamNumber, teamName, version, game, lastEdited;
         public Integer year;
         public Boolean prod;
     }

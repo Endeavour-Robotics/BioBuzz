@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.RoboWarriors.Autonomus;
 
-import static com.pedropathing.api.Paths.*;
 import com.pedropathing.api.Paths;
 
 import com.pedropathing.api.PoseFactory;
@@ -10,7 +9,6 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
-import static com.pedropathing.ivy.commands.Commands.*;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -19,27 +17,27 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Pedro.RoboWarriors.Constants;
 
 @Autonomous(name = "AutoPath", group = "Autonomous")
-public class AutoPath extends LinearOpMode {
+public class AutonPathBlue1 extends LinearOpMode {
 
     private Follower follower;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(56, 8, 90);
-    private final Pose shoot1 = poseFactory.of(56.2599, 15.5007, 270);
-    private final Pose intake1Start = poseFactory.of(56.2599, 15.5007, 270);
-    private final Pose intake1 = poseFactory.of(9.561, 10.5547, 270);
-    private final Pose shoot2Start = poseFactory.of(9.561, 10.5547, 270);
-    private final Pose shoot2 = poseFactory.of(58.1363, 106.6846, 111);
-    private final Pose shoot2Control1 = poseFactory.of(27.7692, 111.6085, 0);
-    private final Pose intake2Start = poseFactory.of(58.1363, 106.6846, 111);
-    private final Pose intake2 = poseFactory.of(46.6667, 131.5309, 90);
-    private final Pose shoot3Start = poseFactory.of(46.6667, 131.5309, 90);
-    private final Pose shoot3 = poseFactory.of(45.7644, 113.2425, 180);
-    private final Pose intake3 = poseFactory.of(12.171, 46.5804, 180);
-    private final Pose intake3Control1 = poseFactory.of(26.1334, 87.8554, 0);
-    private final Pose shoot4Start = poseFactory.of(12.171, 46.5804, 180);
-    private final Pose shoot4 = poseFactory.of(58.2647, 34.4814, 0);
+    private final Pose start = poseFactory.of(87.2426, 132.7709, 90);
+    private final Pose shoot1 = poseFactory.of(86.8085, 116.7464, 90);
+    private final Pose intake1Start = poseFactory.of(86.8085, 116.7464, 90);
+    private final Pose intake1 = poseFactory.of(131.5905, 131.1433, 90);
+    private final Pose shoot2Start = poseFactory.of(131.5905, 131.1433, 90);
+    private final Pose shoot2 = poseFactory.of(83.8864, 32.1009, 270);
+    private final Pose shoot2Control1 = poseFactory.of(133.7708, 59.3302, 0);
+    private final Pose intake2Start = poseFactory.of(83.8864, 32.1009, 270);
+    private final Pose intake2 = poseFactory.of(93.0907, 11.465, 270);
+    private final Pose shoot3Start = poseFactory.of(93.0907, 11.465, 270);
+    private final Pose shoot3 = poseFactory.of(85.6284, 31.1655, 0);
+    private final Pose intake3 = poseFactory.of(127.4121, 94.5022, 0);
+    private final Pose intake3Control1 = poseFactory.of(129.8303, 50.0407, 0);
+    private final Pose shoot4Start = poseFactory.of(127.4121, 94.5022, 0);
+    private final Pose shoot4 = poseFactory.of(84.1066, 107.4967, 180);
 
     // Autonomous routine
     public Command autoRoutine() {
@@ -109,3 +107,4 @@ public class AutoPath extends LinearOpMode {
         return Paths.line(shoot4Start, shoot4).linear(shoot4Start, shoot4);
     }
 }
+

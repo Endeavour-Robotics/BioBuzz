@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Console;
 import org.firstinspires.ftc.teamcode.RoboWarriors.System.biobuzzConfigurer;
 import org.firstinspires.ftc.teamcode.RoboWarriors.System.configBuilder;
-import org.firstinspires.ftc.teamcode.RoboWarriors.System.robot;
+import org.firstinspires.ftc.teamcode.RoboWarriors.System.bot;
 import org.firstinspires.ftc.teamcode.RoboWarriors.System.seasonConfigurer;
 
 import java.io.File;
@@ -21,7 +21,7 @@ import java.util.List;
 @TeleOp(name="DebugLayerTest", group="tests")
 public class DebugLayerTest extends OpMode {
     private Console console;
-    robot robot = new robot();
+    bot bot = new bot();
     seasonConfigurer season = new biobuzzConfigurer(); // BioBuzz season
     Telemetry tm;
     configBuilder config;
@@ -76,15 +76,15 @@ public class DebugLayerTest extends OpMode {
         }
 
         if (intake) {
-            robot.teleop.take("in", 0.7);
+            bot.teleop.take("in", 0.7);
         } else {
-            robot.teleop.take("in", 0);
+            bot.teleop.take("in", 0);
         }
 
         if (outtake) {
-            robot.teleop.take("out", takepowers.get(takerange));
+            bot.teleop.take("out", takepowers.get(takerange));
         } else {
-            robot.teleop.take("out", 0);
+            bot.teleop.take("out", 0);
         }
 
         if (Math.abs(fb) < 0.05) fb = 0;
@@ -93,7 +93,7 @@ public class DebugLayerTest extends OpMode {
 
         if (debugMode && gamepad2.dpad_right) debug();
 
-        robot.teleop.drive(fb, st, cw);
+        bot.teleop.drive(fb, st, cw);
     }
 
     public void debug() {

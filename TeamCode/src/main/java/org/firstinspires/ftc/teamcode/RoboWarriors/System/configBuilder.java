@@ -27,7 +27,7 @@ public class configBuilder {
 
     // RUNTIME VARIABLES
     private static final double DEFAULT_SPEED_LIMIT = 0.8;
-    public Map<String, robot.MotorEquation> kinematics = new HashMap<>();
+    public Map<String, bot.MotorEquation> kinematics = new HashMap<>();
     public configClasses config;
     public final List<String> errors = new ArrayList<>();
     public final List<String> warnings = new ArrayList<>();

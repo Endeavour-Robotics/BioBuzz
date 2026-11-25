@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Console;
 import org.firstinspires.ftc.teamcode.RoboWarriors.System.biobuzzConfigurer;
 import org.firstinspires.ftc.teamcode.RoboWarriors.System.configBuilder;
-import org.firstinspires.ftc.teamcode.RoboWarriors.System.robot;
+import org.firstinspires.ftc.teamcode.RoboWarriors.System.bot;
 import org.firstinspires.ftc.teamcode.RoboWarriors.System.seasonConfigurer;
 
 import java.util.Locale;
@@ -17,7 +17,7 @@ import java.io.File;
 @TeleOp(name="ManualOP", group="BioBuzz")
 public class ManualOp_BioBuzz extends OpMode {
     private Console console;
-    robot bot = new robot();
+    bot robot = new bot();
     Telemetry tm;
     configBuilder config = new configBuilder();
     seasonConfigurer season = new biobuzzConfigurer(); // BioBuzz season
@@ -45,7 +45,7 @@ public class ManualOp_BioBuzz extends OpMode {
         if (config.hasErrors()) { for (String key : config.errors) {console.error("Config", key, true);} tm.update(); }
         if (config.hasWarnings()) { for (String key : config.warnings) {console.warn("Config", key, true);} tm.update(); }
 
-        bot.init(config);
+        robot.init(config);
     }
 
     @Override
@@ -70,9 +70,9 @@ public class ManualOp_BioBuzz extends OpMode {
             }
 
             if (intake) {
-                bot.teleop.take("in", config.config.motorPowers.intake.get(0));
+                robot.teleop.take("in", config.config.motorPowers.intake.get(0));
             } else {
-                bot.teleop.take("in", 0);
+                robot.teleop.take("in", 0);
             }
         }
 
@@ -82,9 +82,9 @@ public class ManualOp_BioBuzz extends OpMode {
             }
 
             if (outtake) {
-                bot.teleop.take("out", config.config.motorPowers.outtake.get(takerange));
+                robot.teleop.take("out", config.config.motorPowers.outtake.get(takerange));
             } else {
-                bot.teleop.take("out", 0);
+                robot.teleop.take("out", 0);
             }
 
             if (gamepad2.dpad_up && gamepad2.dpadUpWasReleased() && takerange < config.config.motorPowers.outtake.size() - 1) {
@@ -99,7 +99,7 @@ public class ManualOp_BioBuzz extends OpMode {
         if ((gamepad2.dpad_right | gamepad1.dpad_right) && (gamepad2.dpadRightWasReleased() | gamepad1.dpadRightWasReleased()) && debugMode) debug = !debug;
         if (debug) debug();
 
-        bot.teleop.drive(fb, rt, cw);
+        robot.teleop.drive(fb, rt, cw);
     }
 
     public void debug() {

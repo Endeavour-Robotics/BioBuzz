@@ -9,15 +9,32 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
+import static com.pedropathing.ivy.commands.Commands.instant;
+import static com.pedropathing.ivy.commands.Commands.waitMs;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Pedro.RoboWarriors.Constants;
+import org.firstinspires.ftc.teamcode.RoboWarriors.System.biobuzzConfigurer;
+import org.firstinspires.ftc.teamcode.RoboWarriors.System.bot;
+import org.firstinspires.ftc.teamcode.RoboWarriors.System.configBuilder;
+import org.firstinspires.ftc.teamcode.RoboWarriors.System.seasonConfigurer;
+
+import static com.pedropathing.ivy.groups.Groups.parallel;
+import static com.pedropathing.ivy.groups.Groups.deadline;
+
 @Autonomous(name = "Red_Test1", group = "AutoTests")
 public class AutonRed_Test1 extends LinearOpMode {
+    bot robot = new bot();
+    configBuilder config = new configBuilder();
+    seasonConfigurer season = new biobuzzConfigurer(); // BioBuzz season
 
+    // helpers inside your OpMode
+    private Command intake(double speed)  { return instant(() -> robot.auto.spin("in", speed)); }
+    private Command outtake(double speed) { return instant(() -> robot.auto.spin("out", speed)); }
+    private Command stopTakes() { return instant(() -> robot.stop(false, true)); }
     private Follower follower;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
@@ -44,13 +61,22 @@ public class AutonRed_Test1 extends LinearOpMode {
 
     // Autonomous routine
     public Command autoRoutine() {
+        robot.init(config);
         return sequential(
                 follow(follower, forwardtoShoot()),
+                waitMs(1500),
+                stopTakes(),
                 follow(follower, gotoHP()),
-                follow(follower, path3()),
+                intake(0.7),
+                follow(follower, collect()),
+                stopTakes(),
                 follow(follower, crabtoShoot()),
+                outtake(0.7),
+                stopTakes(),
                 follow(follower, crabtoHP()),
-                follow(follower, path6()),
+                intake(0.7),
+                follow(follower, collectAgain()),
+                stopTakes(),
                 follow(follower, crabtoShoot_2()),
                 follow(follower, path8())
         );
@@ -60,6 +86,7 @@ public class AutonRed_Test1 extends LinearOpMode {
     public void runOpMode() {
         Scheduler.reset();
         follower = Constants.create(hardwareMap);
+        assert follower != null;
         follower.setPose(start);
         follower.update();
 
@@ -91,7 +118,7 @@ public class AutonRed_Test1 extends LinearOpMode {
         return Paths.line(gotoHPStart, gotoHP).linear(gotoHPStart, gotoHP);
     }
 
-    public Path path3() {
+    public Path collect() {
         return Paths.line(point3Start, point3).linear(point3Start, point3);
     }
 
@@ -103,7 +130,7 @@ public class AutonRed_Test1 extends LinearOpMode {
         return Paths.curve(crabtoHPStart, crabtoHPControl1, crabtoHP).linear(crabtoHPStart, crabtoHP);
     }
 
-    public Path path6() {
+    public Path collectAgain() {
         return Paths.line(point6Start, point6).linear(point6Start, point6);
     }
 

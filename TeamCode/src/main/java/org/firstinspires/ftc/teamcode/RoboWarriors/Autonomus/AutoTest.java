@@ -7,14 +7,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Console;
 import org.firstinspires.ftc.teamcode.RoboWarriors.System.configBuilder;
-import org.firstinspires.ftc.teamcode.RoboWarriors.System.robot;
+import org.firstinspires.ftc.teamcode.RoboWarriors.System.bot;
 
 @Disabled
 @Deprecated
 @Autonomous(name="AutoTest", group="tests")
 public class AutoTest extends LinearOpMode {
     private Console console;
-    robot robot = new robot();
+    bot bot = new bot();
     Telemetry tm;
     configBuilder config;
     String string_state = "fw";
@@ -54,17 +54,17 @@ public class AutoTest extends LinearOpMode {
                     /* Move the robot forward, stop, and turn in place. */
                     console.info("Current State", "F_R_cR");
                     tm.update();
-                    robot.auto.drive(0.25, 0, 0);
+                    bot.auto.drive(0.25, 0, 0);
                     sleep(1000);
-                    robot.auto.drive(0, 0, 0);
+                    bot.auto.drive(0, 0, 0);
                     sleep(500);
-                    robot.auto.drive(0, 0.5, 0);
+                    bot.auto.drive(0, 0.5, 0);
                     sleep(1000);
-                    robot.auto.drive(0, 0, 0);
+                    bot.auto.drive(0, 0, 0);
                     sleep(500);
-                    robot.auto.drive(0, 0, 0.25);
+                    bot.auto.drive(0, 0, 0.25);
                     sleep(1000);
-                    robot.auto.drive(0, 0, 0);
+                    bot.auto.drive(0, 0, 0);
                     /* End; Takes 4 seconds */
                     state = State.F7R_B7cR;
                     break;
@@ -72,19 +72,19 @@ public class AutoTest extends LinearOpMode {
                 case F7R_B7cR: {
                     console.info("Current State", "F7R_B7cR");
                     tm.update();
-                    robot.auto.drive(0.5, 0.3, 0);
+                    bot.auto.drive(0.5, 0.3, 0);
                     sleep(1000);
-                    robot.stop(true);
-                    robot.auto.drive(-0.5, 0, 0.3);
+                    bot.stop(true, true);
+                    bot.auto.drive(-0.5, 0, 0.3);
                     break;
                 }
                 case O7B_I7F7cR: {
                     console.info("Current State", "F7R_B7cR");
                     tm.update();
-                    robot.auto.spin("out", 0.5);
-                    robot.auto.drive(-0.4, 0, 0);
+                    bot.auto.spin("out", 0.5);
+                    bot.auto.drive(-0.4, 0, 0);
                     sleep(1000);
-                    robot.stop(true);
+                    bot.stop(true, true);
                     break;
                 }
                 default: {

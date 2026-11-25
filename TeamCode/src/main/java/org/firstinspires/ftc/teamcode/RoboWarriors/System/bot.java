@@ -4,13 +4,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import java.util.*;
 
-public class robot {
+public class bot {
 
     public configBuilder config = new configBuilder();
     public double flLimit;
     public double frLimit;
     public double blLimit;
     public double brLimit;
+    public double inLimit;
     public DcMotor fl, fr, bl, br;
     public DcMotor in, out;
 
@@ -59,6 +60,7 @@ public class robot {
         this.frLimit = config.getDefaultSpeedLimit("fr");
         this.blLimit = config.getDefaultSpeedLimit("bl");
         this.brLimit = config.getDefaultSpeedLimit("br");
+        this.inLimit = config.config.motorPowers.intake.get(0);
     }
 
     @FunctionalInterface
@@ -84,7 +86,8 @@ public class robot {
 
         public void spin(String inout, double speed) {
             if (inout.equals("in") || inout.equals("intake")) {
-                if (in != null) in.setPower(speed);
+                double intake = limitHelper(speed, inLimit);
+                if (in != null) in.setPower(intake);
             }
 
             if (inout.equals("out") || inout.equals("outtake") || /* Some people don't know */ inout.equals("outake")) {
@@ -93,11 +96,15 @@ public class robot {
         }
     }
 
-    public void stop(boolean inout) {
-        if (fl != null) fl.setPower(0);
-        if (fr != null) fr.setPower(0);
-        if (bl != null) bl.setPower(0);
-        if (br != null) br.setPower(0);
+    /** @param movement Stops the four movement motors
+     *  @param inout Stops intake and outtake motors   */
+    public void stop(boolean movement, boolean inout) {
+        if (movement) {
+            if (fl != null) fl.setPower(0);
+            if (fr != null) fr.setPower(0);
+            if (bl != null) bl.setPower(0);
+            if (br != null) br.setPower(0);
+        }
 
         if (inout){
             if (in != null) in.setPower(0);

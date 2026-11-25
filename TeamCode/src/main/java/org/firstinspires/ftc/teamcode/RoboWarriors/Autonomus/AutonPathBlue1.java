@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.RoboWarriors.Autonomus;
 
-import com.pedropathing.api.Paths;
+import  com.pedropathing.api.Paths;
 
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.ivy.CommandBuilder;
 import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.ivy.Command;
@@ -11,13 +12,15 @@ import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
+import static java.lang.Compiler.command;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Pedro.RoboWarriors.Constants;
 
 @Autonomous(name = "AutoPath", group = "Autonomous")
-public class AutonPathBlue1 extends LinearOpMode {
+public class AutonPathBlue1<Command> extends LinearOpMode {
 
     private Follower follower;
 
@@ -41,7 +44,7 @@ public class AutonPathBlue1 extends LinearOpMode {
 
     // Autonomous routine
     public Command autoRoutine() {
-        return sequential(
+        return sequental(
                 follow(follower, shoot1()),
                 follow(follower, intake1()),
                 follow(follower, shoot2()),
@@ -51,6 +54,9 @@ public class AutonPathBlue1 extends LinearOpMode {
                 follow(follower, shoot4())
         );
     }
+
+    private Command sequental(CommandBuilder follow, CommandBuilder follow1, CommandBuilder follow2, CommandBuilder follow3, CommandBuilder follow4, CommandBuilder follow5, CommandBuilder follow6)
+
 
     @Override
     public void runOpMode() {
